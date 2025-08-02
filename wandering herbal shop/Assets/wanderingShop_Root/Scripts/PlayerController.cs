@@ -146,6 +146,8 @@ public class PlayerController : MonoBehaviour
             readyToPick = true;
             if (heldObject==null) heldObject = other.gameObject;
         }
+
+        //cuando se acerque al carro y le de a interactuar, la camara que le sigue (guardandose sus transform) cambia a la posicion de prepping
     }
 
     private void OnTriggerExit(Collider other)
