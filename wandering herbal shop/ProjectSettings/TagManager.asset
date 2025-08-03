@@ -7,6 +7,7 @@ TagManager:
   - Pickable
   - NPC
   - House
+  - TeaShop
   layers:
   - Default
   - TransparentFX

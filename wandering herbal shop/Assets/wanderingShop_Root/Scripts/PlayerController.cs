@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody rb;
     PlayerInput input;
     Animator anim;
+    [SerializeField] MeshRenderer[] renderers;
 
     [SerializeField] bool readyToTalk;
     public bool talkOrder;
@@ -27,6 +28,8 @@ public class PlayerController : MonoBehaviour
     public bool grabSth;
 
     public bool canMove = true;
+    [SerializeField] int camChangeStep;
+    CameraChange camChange;
 
     [Header("GroundCheck Parameters")]
     [SerializeField] bool isGrounded;
@@ -106,6 +109,30 @@ public class PlayerController : MonoBehaviour
                     //anim recoger y subir objeto
                     carryingSth = true;
                 }
+                if(camChangeStep == 1)
+                {
+                    
+                    for (int i = 0; i < renderers.Length; i++)
+                    {
+                        renderers[i].enabled = false;
+                        Debug.Log("Disabling: " + renderers[i].gameObject.name);
+
+                    }
+                    canMove = false;
+                    camChange.changeTrigger = true;
+                    camChangeStep = 2;
+                }
+                else if(camChangeStep == 2)
+                {
+                    
+                    for (int i = 0; i < renderers.Length; i++)
+                    {
+                        renderers[i].enabled = true;
+                    }
+                    camChange.changeTrigger = true;
+                    canMove = true;
+                    camChangeStep = 1;
+                }
             }
         }
 
@@ -146,6 +173,15 @@ public class PlayerController : MonoBehaviour
             readyToPick = true;
             if (heldObject==null) heldObject = other.gameObject;
         }
+        if (other.CompareTag("TeaShop"))
+        {
+            if(other.GetComponent<CameraChange>() != null)
+            {
+                camChange = other.GetComponent<CameraChange>();
+                camChangeStep = 1;
+                Debug.Log("camera change");
+            }
+        }
 
         //cuando se acerque al carro y le de a interactuar, la camara que le sigue (guardandose sus transform) cambia a la posicion de prepping
     }
@@ -164,6 +200,11 @@ public class PlayerController : MonoBehaviour
         {
             readyToPick = false;
             if (!carryingSth) heldObject = null;
+        }
+        if (other.CompareTag("TeaShop"))
+        {
+            camChange = null;
+            camChangeStep = 0;
         }
     }
     void StepClimb()
