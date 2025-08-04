@@ -55,13 +55,19 @@ public class NPC : MonoBehaviour
             }
             
         }   
-        if(inShop)
+        if(inShop&&arrived)
         {
             if(drinkScript.isFinished && drinkScript.isFinished)
             {
                 if(herbNumber == drinkScript.ingredient)
                 {
                     served = true;
+                    GameManager.Instance.money++; //suma muchos, como lo controlo? por ahora lo hago en coroutina
+                    if(GameManager.Instance.infoUpdatesText != null)
+                    {
+                        GameManager.Instance.infoUpdatesText.text = "+1$";
+                        StartCoroutine(GameManager.Instance.FadeWait());
+                    }
                     arrived = false;
                 }
             }

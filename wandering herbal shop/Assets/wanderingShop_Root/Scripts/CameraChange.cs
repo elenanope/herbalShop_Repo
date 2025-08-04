@@ -10,6 +10,8 @@ public class CameraChange : MonoBehaviour
     [SerializeField] int cameraBefore;
     [SerializeField] float transitionSpeed;
     [SerializeField] GameObject transitionPanel;
+    [SerializeField] GameObject drinkPanel;
+    [SerializeField] RenderTexture pixelRenderTexture;
 
     private void Update()
     {
@@ -18,19 +20,39 @@ public class CameraChange : MonoBehaviour
             ChangingCamera();
         }
     }
+    private void Start()
+    {
+        drinkPanel.SetActive(false);
+        GameManager.Instance.cameras[cameraToChoose].targetTexture = null;
+        GameManager.Instance.cameras[cameraBefore].targetTexture = pixelRenderTexture;
+        GameManager.Instance.cameras[cameraBefore].enabled = true;
+        GameManager.Instance.cameras[cameraToChoose].enabled = false;
+    }
     void ChangingCamera()
     {
         if(!camChanged)
         {
-            GameManager.Instance.cameras[cameraToChoose].gameObject.SetActive(true);
-            GameManager.Instance.cameras[cameraBefore].gameObject.SetActive(false);
+            //GameManager.Instance.cameras[cameraToChoose].gameObject.SetActive(true);
+            //GameManager.Instance.cameras[cameraBefore].gameObject.SetActive(false);
+            GameManager.Instance.cameras[cameraBefore].targetTexture = null;
+            GameManager.Instance.cameras[cameraToChoose].targetTexture = pixelRenderTexture;
+            GameManager.Instance.cameras[cameraToChoose].enabled = true;
+            GameManager.Instance.cameras[cameraBefore].enabled = false;
+            //GameManager.Instance.cameras[cameraBefore].targetTexture = null;
+            drinkPanel.SetActive(true);
             camChanged = true;
             changeTrigger = false;
         }
         else
         {
-            GameManager.Instance.cameras[cameraBefore].gameObject.SetActive(true);
-            GameManager.Instance.cameras[cameraToChoose].gameObject.SetActive(false);
+            //GameManager.Instance.cameras[cameraBefore].gameObject.SetActive(true);
+            //GameManager.Instance.cameras[cameraToChoose].gameObject.SetActive(false);
+            GameManager.Instance.cameras[cameraToChoose].targetTexture = null;
+            GameManager.Instance.cameras[cameraBefore].targetTexture = pixelRenderTexture;
+            GameManager.Instance.cameras[cameraBefore].enabled = true;
+            GameManager.Instance.cameras[cameraToChoose].enabled = false;
+            drinkPanel.SetActive(false);
+            //GameManager.Instance.cameras[cameraToChoose].targetTexture = null;
             camChanged = false;
             changeTrigger = false;
         }

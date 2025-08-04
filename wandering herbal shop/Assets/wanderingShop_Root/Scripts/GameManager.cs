@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,10 +21,13 @@ public class GameManager : MonoBehaviour
     }
 
     public string playerName;
-
+    public int money;
+    public TMP_Text infoUpdatesText;
+    public TMP_Text moneyText;
     public Sprite[] herbs = new Sprite[10];
     public Camera[] cameras;
-
+    
+    [SerializeField] float fadeDuration = 1.5f;
 
     private void Awake()
     {
@@ -44,6 +50,31 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(moneyText.text != "$" + money.ToString())
+        {
+            moneyText.text = "$" + money.ToString();
+        }
         
     }
+    public IEnumerator FadeWait()
+    {
+        infoUpdatesText.gameObject.SetActive(true);
+        //money++;
+        Color infoColor = infoUpdatesText.color;
+        infoColor.a = 1f;
+        infoUpdatesText.color = infoColor;
+        Debug.Log("Mensaje espernado");
+        yield return new WaitForSeconds(2); //WaitForSecondsRealtime?
+
+        while (infoColor.a > 0f)
+        {
+            infoColor.a -= fadeDuration * Time.deltaTime; // es "menos" para FadeIn pq el panel tiene el alpha a tope 
+            infoColor.a = Mathf.Clamp01(infoColor.a);
+            infoUpdatesText.color = infoColor;
+
+            yield return null;
+        }
+        infoUpdatesText.gameObject.SetActive(false);
+    }
+    
 }
