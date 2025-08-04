@@ -31,6 +31,10 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
     }
+
+    // SOLO PUEDE HABER UNA CAJA DE MUGS EN EL JUEGO, ASI QUE CUANDO LLEGUE A LA NOCHE, SI NO LA HAS GASTADO TE LA ROBARAN O LE PASARÁN COSAS, NADA MÁS LA COMPRES SE AGOTARÁ EN LA TIENDA 
+
+
     // Start is called before the first frame update
     void Start()
     {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -88,27 +89,8 @@ public class PlayerController : MonoBehaviour
         if (InputManager.instance.InteractInput)
         {
             Debug.Log("Interactuando");
-            if (carryingSth)
+            if (!carryingSth)
             {
-                Debug.Log("You left a " + heldObject);
-                heldObject.transform.parent = null;
-                heldObject.transform.position = new Vector3(heldObject.transform.position.x, 0 , heldObject.transform.position.z);
-                carryingSth = false;
-                heldObject = null;
-                anim.SetBool("isHolding", false);
-            }
-            else
-            {
-                if (readyToPick && !carryingSth)
-                {
-                    Debug.Log("You are holding a " + heldObject);
-                    heldObject.transform.parent = transform;
-                    anim.SetTrigger("groundPick");    
-                    anim.SetBool("isHolding", true);    
-                    heldObject.transform.position = heldPlace.position;
-                    //anim recoger y subir objeto
-                    carryingSth = true;
-                }
                 if(camChangeStep == 1)
                 {
                     
@@ -133,14 +115,43 @@ public class PlayerController : MonoBehaviour
                     canMove = true;
                     camChangeStep = 1;
                 }
+                if (canMove && heldObject != null)
+                {
+                    Debug.Log("You are interacting with a " + heldObject);
+                    Animator objectAnimator = heldObject.GetComponent<Animator>();
+                    if (objectAnimator.parameters.Any(p => p.name == "openOrClose") && objectAnimator != null)
+                    {
+                        //objectAnimator.SetBool("isOpen", !objectAnimator.GetBool("isOpen"));
+                        objectAnimator.SetBool("isOpen", !objectAnimator.GetBool("isOpen"));
+                        if (objectAnimator.GetBool("isOpen")) objectAnimator.SetTrigger("openOrClose");
+                    }
+                }
             }
         }
 
-        if (InputManager.instance.TalkInput)
+        if (InputManager.instance.MoveObject)
         {
-            if (readyToTalk)
+            if (carryingSth)
             {
-                if (!talkOrder) talkOrder = true;
+                Debug.Log("You left a " + heldObject);
+                heldObject.transform.parent = null;
+                heldObject.transform.position = new Vector3(heldObject.transform.position.x, 0, heldObject.transform.position.z);
+                carryingSth = false;
+                heldObject = null;
+                anim.SetBool("isHolding", false);
+            }
+            else
+            {
+                if (readyToPick && !carryingSth)
+                {
+                    Debug.Log("You are holding a " + heldObject);
+                    heldObject.transform.parent = transform;
+                    anim.SetTrigger("groundPick");
+                    anim.SetBool("isHolding", true);
+                    heldObject.transform.position = heldPlace.position;
+                    //anim recoger y subir objeto
+                    carryingSth = true;
+                }
             }
         }
     }
