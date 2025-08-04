@@ -23,9 +23,14 @@ public class GameManager : MonoBehaviour
     public string playerName;
     public int money;
     public TMP_Text infoUpdatesText;
-    public TMP_Text moneyText;
+    [SerializeField] TMP_Text moneyText;
     public Sprite[] herbs = new Sprite[10];
     public Camera[] cameras;
+    [SerializeField] Dictionary<string, int> payments = new Dictionary<string, int>(); // pagar el carrito, la tasa de circulación, otras tasas, alquiler, comida, agua para negocio, tazas
+                                                                                       // TAMBIEN BENEFICIOS! como tu salario, propinas, dinero encontrado por la calle
+    //hacer que todos estos impuestos puedan estar visibles en un menu que salga al final del dia de manera ordenada
+    //que de igual si hay 3 que 8, si hay 8 que una barra como slider esté disponible para que recorras todos bajando el slider
+    // tmb añadir que te haga operación del dinero total? y gastos en color distinto a ganancias?? quien sabe,...
     
     [SerializeField] float fadeDuration = 1.5f;
 
@@ -54,7 +59,6 @@ public class GameManager : MonoBehaviour
         {
             moneyText.text = "$" + money.ToString();
         }
-        
     }
     public IEnumerator FadeWait()
     {
@@ -63,7 +67,6 @@ public class GameManager : MonoBehaviour
         Color infoColor = infoUpdatesText.color;
         infoColor.a = 1f;
         infoUpdatesText.color = infoColor;
-        Debug.Log("Mensaje espernado");
         yield return new WaitForSeconds(2); //WaitForSecondsRealtime?
 
         while (infoColor.a > 0f)
