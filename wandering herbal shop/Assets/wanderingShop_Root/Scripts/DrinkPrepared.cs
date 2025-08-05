@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using System;
+using System.Linq;
 
 public class DrinkPrepared : MonoBehaviour
 {
@@ -13,11 +16,41 @@ public class DrinkPrepared : MonoBehaviour
     [SerializeField] int mugsAvailable;
     [SerializeField] int mugsInBox;
     [SerializeField] GameObject mugBox = null; //añadir tmb otras tazas
+    [SerializeField] GameObject mugPrefab; //añadir tmb otras tazas
+    [SerializeField] GameObject actualMug = null; //añadir tmb otras tazas
+    [SerializeField] GameObject actualNPC = null; //añadir tmb otras tazas
+    [SerializeField] Transform mugSpawner; //añadir tmb otras tazas
+    public bool mugInTable; //añadir tmb otras tazas
     [SerializeField] TMP_Text replenishText; //añadir tmb otras tazas
     [SerializeField] bool extraMugs;//hacer que sea int y las puedas poner poco a poco?
 
+    [SerializeField] Button[] herbsButton = new Button[9]; //en total: menta, dandelion, manzanilla, tomillo, hinojo, colaCaballo, lavanda, tila,  te, frutosBosque
+    [SerializeField] int[] herbActualOrder = {-1, -1, -1, -1, -1, -1, -1, -1, -1}; //en el orden en el que lleguen a botones/cuales estén libres SI ESTAN VACIOS -1
+    //refe a cada boton: cada uno accede a sus hijos imagen y les activa el componente imagen con el sprite correspondiente
+    //cada vez que empieces nuevo día o entres al juego, que sse mantengan los que estaban
+
     private void Start()
     {
+        for (int i = 0; i < herbsButton.Length; i++) // cambiar esto para que checkee en los datos de guardado cuantas hierbas hay ed cada, y no simmplemente restockee las 5
+        {
+            int herbIndex = herbActualOrder[i];
+            if (herbsButton[i].GetComponent<herbsInButton>().spritesHerbs != null)//i
+            { //poner aqui otro bucle para cada image??
+                Image[] childrenSprites = herbsButton[i].GetComponent<herbsInButton>().spritesHerbs;//i
+                foreach (Image sprite in childrenSprites )
+                {
+                    if (herbActualOrder[i] != -1) // si no está vacío
+                    {
+                        
+                        sprite.enabled = true;
+                        sprite.sprite = GameManager.Instance.herbs[herbActualOrder[i]];
+                       
+                    }
+                }
+                herbsButton[i].onClick.RemoveAllListeners();
+                herbsButton[i].onClick.AddListener(() => NewIngredient(herbIndex));
+            }
+        }
         mugsAvailable = 0;
         for (int i = 0; i < mugsInShop.Length; i++)
         {
@@ -32,16 +65,73 @@ public class DrinkPrepared : MonoBehaviour
     public void NewIngredient(int ingredientNumber)
     {
         //if hay una taza fuera
-        ingredient = ingredientNumber;
-        isEmpty = false;
-        Debug.Log("New inredient!");
+        if (mugInTable)
+        {
+            if(herbActualOrder.Contains(ingredientNumber)) //esto si solo puedes poner 1 vez cada planta a la VEZ
+            {
+                int buttonNumber = System.Array.IndexOf(herbActualOrder, ingredientNumber);
+                Image[] childrenSprites = null;
+                herbsInButton herbButtonControl = herbsButton[buttonNumber].GetComponent<herbsInButton>();
+                childrenSprites = herbsButton[buttonNumber].GetComponent<herbsInButton>().spritesHerbs;
+                int enabledHerbs = 0;
+                for (int i = 0;i < childrenSprites.Length;i++)
+                {
+                    if (childrenSprites[i].gameObject != herbsButton[buttonNumber].gameObject) //para que no se coja a si mismo
+                    {
+                        if (childrenSprites[i].enabled)
+                        {
+                            enabledHerbs++;
+                        }
+                    }
+                }
+                Debug.Log("Quedan todavía " + enabledHerbs + " trozos de la planta id " + ingredientNumber);
+                for (int i = 0; i < childrenSprites.Length; i++)
+                {
+                    if (childrenSprites[i].gameObject != herbsButton[buttonNumber].gameObject)
+                    {
+                        if (childrenSprites[i].enabled)
+                        {
+                            ingredient = ingredientNumber;
+                            isEmpty = false;
+                            Debug.Log("Ingredient added!");
+                            if (enabledHerbs == 1)
+                            {
+                                herbsButton[buttonNumber].onClick.RemoveAllListeners();
+                                herbActualOrder[buttonNumber] = -1;
+                                Debug.Log("Botón apagado por falta de hierbas!");
+                            }
+                            childrenSprites[i].enabled = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            /*
+            1. buscar ingredientNumber en el orden de los ingredientes en los botones
+            2. acceder a ese botón y a sus hijos con componente image
+            3. SI NO ESTÁN TODOS APAGADOS: apagar un hijo que esté activado (a ser posible el que esté visiblemente más arriba)
+            4. EN EL MOMENTO EN EL QUE SOLO QUEDE 1 Y LO GASTES, EL NÚMERO DE HERBACTUALORDER DE ESE BOTÓN PASA A -1 Y SE APAGA EL BOTÓN HASTA QUE PONGAS MÁS HIERBAS
+            */
+        }
+        else Debug.Log("You need a mug!");
+        
     }
     public void FinishDrink()
     {
-        if(!isEmpty) isFinished = true;
+        if (!isEmpty)
+        {
+            isFinished = true; 
+            Debug.Log("Drink finished!");
+        }
+
         else isFinished = false;
-        Debug.Log("Drink finished!");
+        
+        if(actualMug != null)
+        {
+            actualMug.transform.parent = actualNPC.transform;
+        }
     }
+
     public void UseMugs()
     {
         Debug.Log("You are pressing the button");
@@ -70,17 +160,25 @@ public class DrinkPrepared : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < mugsInShop.Length; i++)
+            if (!mugInTable)
             {
-                if (mugsInShop[i].activeSelf)
+                for (int i = 0; i < mugsInShop.Length; i++)
                 {
-                    mugsAvailable--;
-                    mugsInShop[i].SetActive(false);
-                    //ponerla en position 0.147 , 0.254 , 0.057; rotacion Y 181.65; solo dejar que saque una taza mientras haya una fuera
-                    break;
+                    if (mugsInShop[i].activeSelf)
+                    {
+                        mugsAvailable--;
+                        mugsInShop[i].SetActive(false);
+                        actualMug = Instantiate(mugPrefab);
+                        actualMug.transform.position = mugSpawner.position;
+                        actualMug.transform.rotation = mugSpawner.rotation;
+                        mugInTable = true;
+                        //ponerla en position 0.147 , 0.254 , 0.057; rotacion Y 181.65; solo dejar que saque una taza mientras haya una fuera
+                        break;
+                    }
                 }
+                Debug.Log("Mugs now available: " + mugsAvailable);
             }
-            Debug.Log("Mugs now available: " + mugsAvailable);
+            else Debug.Log("Look! You already have a mug!");
         }
         if(mugsAvailable == 0)
         {
@@ -95,6 +193,10 @@ public class DrinkPrepared : MonoBehaviour
             mugBox = other.gameObject;
             extraMugs = true;
         }
+        if(other.CompareTag("NPC"))
+        {
+            actualNPC = other.gameObject;
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -103,6 +205,10 @@ public class DrinkPrepared : MonoBehaviour
         {
             mugBox = null;
             extraMugs = false;
+        }
+        if (other.CompareTag("NPC"))
+        {
+            actualNPC = null;
         }
     }
 }

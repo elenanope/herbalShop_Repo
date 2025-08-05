@@ -62,6 +62,7 @@ public class NPC : MonoBehaviour
                 if(herbNumber == drinkScript.ingredient)
                 {
                     served = true;
+                    drinkScript.mugInTable = false;
                     GameManager.Instance.money++; //suma muchos, como lo controlo? por ahora lo hago en coroutina
                     if(GameManager.Instance.infoUpdatesText != null)
                     {

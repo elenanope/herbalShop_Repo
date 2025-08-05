@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform heldPlace;
     [SerializeField] bool readyToPick;
     [SerializeField] bool carryingSth;
+    [SerializeField] bool herbToPick;
     public bool grabSth;
 
     public bool canMove = true;
@@ -118,12 +119,21 @@ public class PlayerController : MonoBehaviour
                 if (canMove && heldObject != null)
                 {
                     Debug.Log("You are interacting with a " + heldObject);
-                    Animator objectAnimator = heldObject.GetComponent<Animator>();
-                    if (objectAnimator.parameters.Any(p => p.name == "openOrClose") && objectAnimator != null)
+                    if(heldObject.GetComponent<Animator>() != null)
                     {
-                        //objectAnimator.SetBool("isOpen", !objectAnimator.GetBool("isOpen"));
-                        objectAnimator.SetBool("isOpen", !objectAnimator.GetBool("isOpen"));
-                        if (objectAnimator.GetBool("isOpen")) objectAnimator.SetTrigger("openOrClose");
+                        Animator objectAnimator = heldObject.GetComponent<Animator>();
+                        if (objectAnimator.parameters.Any(p => p.name == "openOrClose"))
+                        {
+                            objectAnimator.SetBool("isOpen", !objectAnimator.GetBool("isOpen"));
+                            if (objectAnimator.GetBool("isOpen")) objectAnimator.SetTrigger("openOrClose");
+                        }
+                    }
+                        
+                    if(herbToPick)
+                    {
+                        heldObject.SetActive(false);
+                        //se suma al inventario
+                        Debug.Log("Tienes una hierba nueva!");
                     }
                 }
             }
@@ -183,6 +193,12 @@ public class PlayerController : MonoBehaviour
         {
             readyToPick = true;
             if (heldObject==null) heldObject = other.gameObject;
+            if(other.GetComponent<Herb>()!= null)
+            {
+                Herb actualHerb = other.GetComponent<Herb>();
+                herbToPick = true;
+            }
+            
         }
         if (other.CompareTag("TeaShop"))
         {
@@ -211,6 +227,7 @@ public class PlayerController : MonoBehaviour
         {
             readyToPick = false;
             if (!carryingSth) heldObject = null;
+            if (herbToPick) herbToPick = false;
         }
         if (other.CompareTag("TeaShop"))
         {
