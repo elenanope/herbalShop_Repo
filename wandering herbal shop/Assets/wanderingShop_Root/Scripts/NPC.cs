@@ -16,7 +16,7 @@ public class NPC : MonoBehaviour
     [SerializeField] bool inShop;
     [SerializeField] DrinkPrepared drinkScript;
 
-    [SerializeField] bool served;
+    public bool served;
     [SerializeField] GameObject dialogueBubble;
     [SerializeField] SpriteRenderer wantedHerb;
     [SerializeField] int herbNumber;
@@ -24,14 +24,28 @@ public class NPC : MonoBehaviour
     [SerializeField] bool stay;
 
     [SerializeField] bool onTheWay;
-    [SerializeField] bool arrived;
+    public bool arrived;
     [SerializeField] Transform startPos;
     [SerializeField] Transform shopPos;
 
+    [SerializeField] Transform spawnPos;
+
+    //esto para npcs más especiales/cuando elabore más el juego, el resto o algunos random llegan a tu tienda y después se van y desaparecen o dan vueltas más sin sentido
+    [SerializeField] Transform[] routePos; //por ejemplo, 0 tienda, 1 bajo arbol, 2 parque, 3 hablar en parque
+    [SerializeField] int indexRoute;
+    [SerializeField] int[] scheduleHours; //por ejemplo, 12 bebida, 14 comer, 17 parque -> si son de repente las 17 y no está en el parque, va hacia el parque y se queda ahí
+
 
     [SerializeField] Animator animator;
-    //hacer en general arrays de lugares donde ir
     // ? [SerializeField] bool isSpecial;
+    private void OnEnable()
+    {
+        //esto por ahora
+        shopPos = GameObject.Find("carro").transform;
+        startPos = GameObject.Find("NPCStartPos").transform;
+        spawnPos = GameObject.Find("NPCSpawnPos").transform;
+        transform.position = spawnPos.position;
+    }
     private void Update()
     {
         if(!stay)
@@ -39,7 +53,7 @@ public class NPC : MonoBehaviour
             if(!arrived && !served)
             {
                 float distance = Vector3.Distance(transform.position, shopPos.position);
-                if (distance < 0.5)
+                if (distance < 0.3)
                 {
                     animator.SetBool("isWalking", false);
                     arrived = true;
@@ -48,7 +62,7 @@ public class NPC : MonoBehaviour
             else if (served && !arrived)
             {
                 float distance = Vector3.Distance(transform.position, startPos.position); //arreglar todo esto para que no lo checkee constantly
-                if (distance < 0.5)
+                if (distance < 0.3)
                 {
                     animator.SetBool("isWalking", false);
                 }

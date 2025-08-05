@@ -10,6 +10,7 @@ public class DrinkPrepared : MonoBehaviour
 {
     //public List<int> ingredients = new List<int>();
     public int ingredient = -1;
+    public int waterAdded = 0;
     public bool isFinished;
     [SerializeField] bool isEmpty;
     [SerializeField] GameObject[] mugsInShop = new GameObject[5];
@@ -116,22 +117,37 @@ public class DrinkPrepared : MonoBehaviour
         else Debug.Log("You need a mug!");
         
     }
+    public void AddWater()
+    {
+        //si el aparato no está roto,tiene batería y tiene suficiente agua
+        if(mugInTable)waterAdded++;
+    }
     public void FinishDrink()
     {
-        if (!isEmpty)
+        GameObject lastNPC = actualNPC;
+        if (!isEmpty && waterAdded > 0)
         {
-            isFinished = true; 
+            isFinished = true;
             Debug.Log("Drink finished!");
+            if (actualMug != null)
+            {
+                actualMug.transform.parent = lastNPC.transform;//si vienen muy juntos, se queda la taza el otro
+                                                               //reset:
+                StartCoroutine(ResetIngredients());
+            }
         }
-
         else isFinished = false;
-        
-        if(actualMug != null)
-        {
-            actualMug.transform.parent = actualNPC.transform;
-        }
     }
-
+    IEnumerator ResetIngredients()
+    {
+        yield return new WaitForSeconds(0.5f);
+        mugInTable = false;
+        isEmpty = true;
+        isFinished = false;
+        waterAdded = 0;
+        TimeManager.Instance.npcAtShop -= 1;
+        StopAllCoroutines();
+    }
     public void UseMugs()
     {
         Debug.Log("You are pressing the button");
@@ -196,6 +212,7 @@ public class DrinkPrepared : MonoBehaviour
         if(other.CompareTag("NPC"))
         {
             actualNPC = other.gameObject;
+            TimeManager.Instance.npcAtShop++;
         }
     }
 
@@ -209,6 +226,8 @@ public class DrinkPrepared : MonoBehaviour
         if (other.CompareTag("NPC"))
         {
             actualNPC = null;
+            // no va :( , lo pongo en reset TimeManager.Instance.npcAtShop -= 1; //no va??
+            //TimeManager.Instance.firstNPC = true;
         }
     }
 }
