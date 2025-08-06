@@ -5,5 +5,5 @@ using UnityEngine.UI;
 
 public class herbsInButton : MonoBehaviour
 {
-    public Image[] spritesHerbs = new Image[5];
+    public SpriteRenderer[] spritesHerbs = new SpriteRenderer[5];
 }

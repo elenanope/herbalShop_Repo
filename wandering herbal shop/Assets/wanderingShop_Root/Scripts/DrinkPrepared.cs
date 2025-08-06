@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class DrinkPrepared : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class DrinkPrepared : MonoBehaviour
     [SerializeField] GameObject actualNPC = null; //añadir tmb otras tazas
     [SerializeField] Transform mugSpawner; //añadir tmb otras tazas
     public bool mugInTable; //añadir tmb otras tazas
+
+    
+
+    SpriteRenderer[] childrenSprites;
     [SerializeField] TMP_Text replenishText; //añadir tmb otras tazas
     [SerializeField] bool extraMugs;//hacer que sea int y las puedas poner poco a poco?
 
@@ -30,15 +35,16 @@ public class DrinkPrepared : MonoBehaviour
     //refe a cada boton: cada uno accede a sus hijos imagen y les activa el componente imagen con el sprite correspondiente
     //cada vez que empieces nuevo día o entres al juego, que sse mantengan los que estaban
 
+    //32.15 rotacion x ingredientes preparar, 5 rotacion x to hear out
     private void Start()
     {
         for (int i = 0; i < herbsButton.Length; i++) // cambiar esto para que checkee en los datos de guardado cuantas hierbas hay ed cada, y no simmplemente restockee las 5
         {
             int herbIndex = herbActualOrder[i];
-            if (herbsButton[i].GetComponent<herbsInButton>().spritesHerbs != null)//i
+            if (herbsButton[i].GetComponent<herbsInButton>().spritesHerbs != null)
             { //poner aqui otro bucle para cada image??
-                Image[] childrenSprites = herbsButton[i].GetComponent<herbsInButton>().spritesHerbs;//i
-                foreach (Image sprite in childrenSprites )
+                childrenSprites = herbsButton[i].GetComponent<herbsInButton>().spritesHerbs;// cambiar esto a modelos en 3d para que quede mejor al mover camara
+                foreach (SpriteRenderer sprite in childrenSprites )
                 {
                     if (herbActualOrder[i] != -1) // si no está vacío
                     {
@@ -71,9 +77,9 @@ public class DrinkPrepared : MonoBehaviour
             if(herbActualOrder.Contains(ingredientNumber)) //esto si solo puedes poner 1 vez cada planta a la VEZ
             {
                 int buttonNumber = System.Array.IndexOf(herbActualOrder, ingredientNumber);
-                Image[] childrenSprites = null;
+                childrenSprites = null;
                 herbsInButton herbButtonControl = herbsButton[buttonNumber].GetComponent<herbsInButton>();
-                childrenSprites = herbsButton[buttonNumber].GetComponent<herbsInButton>().spritesHerbs;
+                childrenSprites = herbsButton[buttonNumber].GetComponent<herbsInButton>().spritesHerbs; // cambiar esto a modelos en 3d para que quede mejor al mover camara
                 int enabledHerbs = 0;
                 for (int i = 0;i < childrenSprites.Length;i++)
                 {
@@ -101,7 +107,9 @@ public class DrinkPrepared : MonoBehaviour
                                 herbActualOrder[buttonNumber] = -1;
                                 Debug.Log("Botón apagado por falta de hierbas!");
                             }
-                            childrenSprites[i].enabled = false;
+                            //StartCoroutine(AddIngredientAnim(childrenSprites[i]));
+                            //childrenSprites[i].enabled = false;
+                            childrenSprites[i].GetComponent<herbSelectedAnim>().ingredientAnimNow = true;
                             break;
                         }
                     }
@@ -117,10 +125,20 @@ public class DrinkPrepared : MonoBehaviour
         else Debug.Log("You need a mug!");
         
     }
+    /*
+    void AddIngredientAnim(SpriteRenderer herbTransform)
+    {
+        //coge el sprite, accede al transform lo guarda, mueve la hierba a traves de los puntos y cuando llega al final se apaga el sprite renderer y vuelve al punto de inicio apagado
+    }*/
+    
     public void AddWater()
     {
         //si el aparato no está roto,tiene batería y tiene suficiente agua
-        if(mugInTable)waterAdded++;
+        if (mugInTable)
+        {
+            waterAdded++;
+            actualMug.transform.GetChild(0).gameObject.SetActive(true);
+        }
     }
     public void FinishDrink()
     {
@@ -145,12 +163,14 @@ public class DrinkPrepared : MonoBehaviour
         isEmpty = true;
         isFinished = false;
         waterAdded = 0;
-        TimeManager.Instance.npcAtShop -= 1;
+        
+        Debug.Log("Reset acabado");
         StopAllCoroutines();
     }
     public void UseMugs()
     {
         Debug.Log("You are pressing the button");
+        //cuenta las tazas que hay
         mugsAvailable = 0;
         for (int i = 0; i < mugsInShop.Length; i++)
         {
@@ -162,6 +182,7 @@ public class DrinkPrepared : MonoBehaviour
             if (mugBox != null)
             {
                 //actualizar esto para que se puedan poner de una en una, pero mientras:
+                replenishText.text = "";
                 for (int i = 0; i < mugsInShop.Length; i++)
                 {
                     mugsInShop[i].SetActive(true);
@@ -170,6 +191,7 @@ public class DrinkPrepared : MonoBehaviour
                 mugBox.SetActive(false);
                 replenishText.text = "";
                 mugBox = null;
+                mugsAvailable = 5;
             }
             else Debug.Log("Consigue más tazas!");
             
@@ -226,6 +248,7 @@ public class DrinkPrepared : MonoBehaviour
         if (other.CompareTag("NPC"))
         {
             actualNPC = null;
+            TimeManager.Instance.npcAtShop -= 1;
             // no va :( , lo pongo en reset TimeManager.Instance.npcAtShop -= 1; //no va??
             //TimeManager.Instance.firstNPC = true;
         }
