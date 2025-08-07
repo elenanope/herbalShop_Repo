@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NPC : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
+    [SerializeField] float turnSpeed = 400;
     [SerializeField] Rigidbody rb;
     [SerializeField] bool hasMug;
     [SerializeField] GameObject mug = null;
@@ -17,11 +19,12 @@ public class NPC : MonoBehaviour
     [SerializeField] DrinkPrepared drinkScript;
 
     public bool served;
-    [SerializeField] GameObject dialogueBubble;
-    [SerializeField] SpriteRenderer wantedHerb;
+    [SerializeField] GameObject dialogueBubble = null;
+    [SerializeField] Image wantedHerb = null;
     [SerializeField] int herbNumber;
 
     [SerializeField] bool stay;
+    [SerializeField] bool canArrive;
 
     [SerializeField] bool onTheWay;
     public bool arrived;
@@ -41,19 +44,22 @@ public class NPC : MonoBehaviour
     private void OnEnable()
     {
         //esto por ahora
-        shopPos = GameObject.Find("carro").transform;
+        shopPos = GameObject.Find("customerPos").transform;
         startPos = GameObject.Find("NPCStartPos").transform;
         spawnPos = GameObject.Find("NPCSpawnPos").transform;
         transform.position = spawnPos.position;
     }
     private void Update()
     {
-        if(!stay)
+        if(!stay && canArrive)
         {
+            Vector2 ownPosNoY = new Vector2 (transform.position.x, transform.position.z);
+            Vector2 shopPosNoY = new Vector2 (shopPos.position.x, shopPos.position.z);
             if(!arrived && !served)
             {
-                float distance = Vector3.Distance(transform.position, shopPos.position);
-                if (distance < 0.3)
+                float distance = Vector3.Distance(ownPosNoY, shopPosNoY); //ahora no va
+                Debug.Log("esta a esta distancia del carro: "+ distance);
+                if (distance < 0.1)
                 {
                     animator.SetBool("isWalking", false);
                     arrived = true;
@@ -62,7 +68,7 @@ public class NPC : MonoBehaviour
             else if (served && !arrived)
             {
                 float distance = Vector3.Distance(transform.position, startPos.position); //arreglar todo esto para que no lo checkee constantly
-                if (distance < 0.3)
+                if (distance < 0.1) //a 0.35 va bien pero se queda muy cerca
                 {
                     animator.SetBool("isWalking", false);
                 }
@@ -110,14 +116,20 @@ public class NPC : MonoBehaviour
 
     void Movement(Vector3 targetPos)
     {
+        Vector3 moveInput;
         rb.position = Vector3.MoveTowards(rb.position, targetPos, moveSpeed*Time.deltaTime);
-        if(animator.GetBool("isWalking") == false) animator.SetBool("isWalking", true);
-        //look towards targetPos
+        moveInput =  targetPos - rb.position;
+        Quaternion toRotation = Quaternion.LookRotation(-moveInput, Vector3.up);
+        rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, toRotation, turnSpeed * Time.fixedDeltaTime));
+        
+        if (animator.GetBool("isWalking") == false) animator.SetBool("isWalking", true);
+        //quitar que rote en algo mas que y
     }
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("TeaShop"))
         {
+            other.GetComponent<CameraChange>().orderTaken = false;
             OrderTea();
             drinkScript = other.gameObject.GetComponent<DrinkPrepared>();
             inShop = true;
@@ -129,6 +141,14 @@ public class NPC : MonoBehaviour
         {
             dialogueBubble.SetActive(false);
             inShop = false;
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("NPC")) //hacerlo con raycast para ver al que está delante
+        {
+            canArrive = false;
+            animator.SetBool("isWalking", false);
         }
     }
 

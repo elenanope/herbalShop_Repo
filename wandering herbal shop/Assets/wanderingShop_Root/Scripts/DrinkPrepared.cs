@@ -9,6 +9,9 @@ using Unity.VisualScripting;
 
 public class DrinkPrepared : MonoBehaviour
 {
+    //camara mirar a la cara rotacion en x: 11
+
+
     //public List<int> ingredients = new List<int>();
     public int ingredient = -1;
     public int waterAdded = 0;

@@ -30,6 +30,7 @@ public class TimeManager : MonoBehaviour
     [SerializeField] GameObject[] npcPrefabs;
     [SerializeField] List<NPC> npcs = new List<NPC>();
     [SerializeField] bool npcSent;
+    [SerializeField] int index;
 
     private void Awake()
     {
@@ -47,7 +48,7 @@ public class TimeManager : MonoBehaviour
         {
             StartCoroutine (NewNPC());
         }
-        if(npcs.Count > 9 && npcAtShop < 1 && !npcSent) //ahora mismo va mal
+        if(index== 9 && npcAtShop < 1 && !npcSent) //ahora mismo va mal
         {
             int randomNPC;
             firstNPC = false;
@@ -62,8 +63,9 @@ public class TimeManager : MonoBehaviour
     IEnumerator NewNPC()
     {
         firstNPC = false;
-        GameObject npc = Instantiate(npcPrefabs[Random.Range(0, npcPrefabs.Length)]); //o si eso por orden para que no haya dos iguales; nada más se instancia, necesita ir a la tienda
-        npcs.Add (npc.GetComponent<NPC>());
+        //GameObject npc = Instantiate(npcPrefabs[Random.Range(0, npcPrefabs.Length)]); //o si eso por orden para que no haya dos iguales; nada más se instancia, necesita ir a la tienda
+        npcs[index].gameObject.SetActive(true);
+        index++;
         //npcAtShop++;
         yield return new WaitForSeconds(15);
         firstNPC = true;
