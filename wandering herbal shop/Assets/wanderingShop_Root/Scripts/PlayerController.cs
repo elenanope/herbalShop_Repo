@@ -178,6 +178,10 @@ public class PlayerController : MonoBehaviour
             if (isGrounded) Movement();
             StepClimb();
         }
+        else
+        {
+            if(anim.GetBool("isWalking") == true) anim.SetBool("isWalking", false);
+        }
     }
     private void OnTriggerEnter(Collider other)
     {

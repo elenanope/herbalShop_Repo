@@ -16,10 +16,11 @@ public class CameraChange : MonoBehaviour
     [SerializeField] RenderTexture pixelRenderTexture;
     [SerializeField] bool cameraForOrdering = true;
     [SerializeField] bool npcOver = false;
-    [SerializeField] float xRotInitial = 11;
-    [SerializeField] float xRotSecond = 32.15f;
-    [SerializeField] Vector3 rotInitial;
-    [SerializeField] Vector3 rotSecond;
+    public bool rotate = false;
+    //[SerializeField] float xRotInitial = 11;
+    //[SerializeField] float xRotSecond = 32.15f;
+    [SerializeField] Quaternion rotInitial;
+    [SerializeField] Quaternion rotSecond;
     public bool orderTaken;
 
     private void Update()
@@ -28,12 +29,20 @@ public class CameraChange : MonoBehaviour
         {
             ChangingCamera();
         }
-        
+        if(rotate)
+        {
+            RotateToTakeOrder();
+        }
+        else
+        {
+            if (orderTaken)
+            {
+                FocusOnHerbs();
+            }
+        }
     }
     private void Start()
     {
-        rotInitial = new Vector3(xRotInitial, GameManager.Instance.cameras[cameraToChoose].transform.eulerAngles.y, GameManager.Instance.cameras[cameraToChoose].transform.eulerAngles.z);
-        rotSecond = new Vector3(xRotSecond, GameManager.Instance.cameras[cameraToChoose].transform.eulerAngles.y, GameManager.Instance.cameras[cameraToChoose].transform.eulerAngles.z);
         Debug.Log(rotInitial);
         Debug.Log(rotSecond);
         drinkPanel.SetActive(false);
@@ -50,7 +59,13 @@ public class CameraChange : MonoBehaviour
             GameManager.Instance.cameras[cameraToChoose].targetTexture = pixelRenderTexture;
             if(!orderTaken)
             {
-                RotateToTakeOrder();
+                if (npcOver)
+                {
+                    GameManager.Instance.cameras[cameraToChoose].transform.rotation = rotInitial;
+                    orderPanel.SetActive(true);
+                }
+                else GameManager.Instance.cameras[cameraToChoose].transform.rotation = rotSecond;
+                //rotate = true;//RotateToTakeOrder();
             }
             GameManager.Instance.cameras[cameraToChoose].enabled = true;
             GameManager.Instance.cameras[cameraBefore].enabled = false;
@@ -66,6 +81,7 @@ public class CameraChange : MonoBehaviour
             GameManager.Instance.cameras[cameraBefore].enabled = true;
             GameManager.Instance.cameras[cameraToChoose].enabled = false;
             drinkPanel.SetActive(false);
+            rotate = false;
             camChanged = false;
             changeTrigger = false;
             Debug.Log("cam changed to outside view!");
@@ -74,21 +90,24 @@ public class CameraChange : MonoBehaviour
     }
     public void FocusOnHerbs()
     {
+        if(rotate)rotate= false;
         Debug.Log("you can begin taken the order!");
-        orderTaken = true;
-        //GameManager.Instance.cameras[cameraToChoose].transform.eulerAngles = rotSecond;
+        if(!orderTaken)orderTaken = true;
 
-        GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(Quaternion.Euler(rotInitial), Quaternion.Euler(rotSecond), transitionSpeed);
+        GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(GameManager.Instance.cameras[cameraToChoose].transform.rotation, rotSecond, transitionSpeed * Time.deltaTime);
         
-        orderPanel.SetActive(false) ;
+        if(orderPanel.activeInHierarchy) orderPanel.SetActive(false); // esto es muy sudden
+        if(GameManager.Instance.cameras[cameraToChoose].transform.rotation==rotSecond)orderTaken = false;
     }
     void RotateToTakeOrder()
     {
-        GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(Quaternion.Euler(rotSecond), Quaternion.Euler(rotInitial), transitionSpeed);
+        GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(GameManager.Instance.cameras[cameraToChoose].transform.rotation, rotInitial, transitionSpeed * Time.deltaTime);
         Debug.Log("Order taken!");
-        
-        //GameManager.Instance.cameras[cameraToChoose].transform.eulerAngles = new Vector3(xRotInitial, GameManager.Instance.cameras[cameraToChoose].transform.eulerAngles.y, GameManager.Instance.cameras[cameraToChoose].transform.eulerAngles.z);
-        if(npcOver)orderPanel.SetActive(true);
+        if (npcOver && GameManager.Instance.cameras[cameraToChoose].transform.rotation == rotInitial)
+        {
+            orderPanel.SetActive(true);
+            rotate = false;
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -98,7 +117,7 @@ public class CameraChange : MonoBehaviour
             Debug.Log("npcOver");
             if (camChanged)
             {
-                RotateToTakeOrder();
+                rotate = true;//RotateToTakeOrder();
             }
         }
         

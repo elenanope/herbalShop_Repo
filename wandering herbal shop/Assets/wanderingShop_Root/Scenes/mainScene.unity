@@ -25049,17 +25049,16 @@ MonoBehaviour:
   camChanged: 0
   cameraToChoose: 1
   cameraBefore: 0
-  transitionSpeed: 23.56
+  transitionSpeed: 4.85
   transitionPanel: {fileID: 0}
   drinkPanel: {fileID: 741515747}
   orderPanel: {fileID: 1711580602}
   pixelRenderTexture: {fileID: 8400000, guid: 7a08229b85f70f741b1bfbce026dea9a, type: 2}
   cameraForOrdering: 1
   npcOver: 0
-  xRotInitial: 11
-  xRotSecond: 32.15
-  rotInitial: {x: 0, y: 0, z: 0}
-  rotSecond: {x: 0, y: 0, z: 0}
+  rotate: 0
+  rotInitial: {x: -0.0000000041895514, y: 0.9953962, z: -0.09584577, w: -0.00000004351015}
+  rotSecond: {x: -0.000000012103483, y: 0.96090007, z: -0.2768954, w: -0.000000042002277}
   orderTaken: 0
 --- !u!114 &1419630838
 MonoBehaviour:

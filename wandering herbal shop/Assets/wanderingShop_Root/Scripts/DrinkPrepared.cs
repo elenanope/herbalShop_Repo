@@ -26,7 +26,7 @@ public class DrinkPrepared : MonoBehaviour
     [SerializeField] GameObject actualNPC = null; //añadir tmb otras tazas
     [SerializeField] Transform mugSpawner; //añadir tmb otras tazas
     public bool mugInTable; //añadir tmb otras tazas
-
+    CameraChange cameraScript;
     
 
     SpriteRenderer[] childrenSprites;
@@ -41,6 +41,7 @@ public class DrinkPrepared : MonoBehaviour
     //32.15 rotacion x ingredientes preparar, 5 rotacion x to hear out
     private void Start()
     {
+        cameraScript = GetComponent<CameraChange>();
         for (int i = 0; i < herbsButton.Length; i++) // cambiar esto para que checkee en los datos de guardado cuantas hierbas hay ed cada, y no simmplemente restockee las 5
         {
             int herbIndex = herbActualOrder[i];
@@ -74,7 +75,6 @@ public class DrinkPrepared : MonoBehaviour
     }
     public void NewIngredient(int ingredientNumber)
     {
-        //if hay una taza fuera
         if (mugInTable)
         {
             if(herbActualOrder.Contains(ingredientNumber)) //esto si solo puedes poner 1 vez cada planta a la VEZ
@@ -128,12 +128,6 @@ public class DrinkPrepared : MonoBehaviour
         else Debug.Log("You need a mug!");
         
     }
-    /*
-    void AddIngredientAnim(SpriteRenderer herbTransform)
-    {
-        //coge el sprite, accede al transform lo guarda, mueve la hierba a traves de los puntos y cuando llega al final se apaga el sprite renderer y vuelve al punto de inicio apagado
-    }*/
-    
     public void AddWater()
     {
         //si el aparato no está roto,tiene batería y tiene suficiente agua
@@ -156,6 +150,8 @@ public class DrinkPrepared : MonoBehaviour
                                                                //reset:
                 StartCoroutine(ResetIngredients());
             }
+            cameraScript.rotate = true;
+            //la camara vuelve a rotar
         }
         else isFinished = false;
     }
