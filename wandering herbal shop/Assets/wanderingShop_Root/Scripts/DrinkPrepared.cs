@@ -73,6 +73,11 @@ public class DrinkPrepared : MonoBehaviour
         }
         else replenishText.text = "";
     }
+    public void CannotServe()
+    {
+        actualNPC.GetComponent<NPC>().canBeServed = false;
+        Debug.Log("Servicio rechazado");
+    }
     public void NewIngredient(int ingredientNumber)
     {
         if (mugInTable)

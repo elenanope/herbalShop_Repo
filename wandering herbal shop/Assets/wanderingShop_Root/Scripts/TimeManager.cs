@@ -67,7 +67,7 @@ public class TimeManager : MonoBehaviour
         npcs[index].gameObject.SetActive(true);
         index++;
         //npcAtShop++;
-        yield return new WaitForSeconds(15);
+        yield return new WaitForSeconds(10);
         firstNPC = true;
     }
     IEnumerator ResendNPC()

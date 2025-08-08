@@ -102,7 +102,7 @@ public class CameraChange : MonoBehaviour
     void RotateToTakeOrder()
     {
         GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(GameManager.Instance.cameras[cameraToChoose].transform.rotation, rotInitial, transitionSpeed * Time.deltaTime);
-        Debug.Log("Order taken!");
+        Debug.Log("Order taken!"); //hacer que aqui no se vea el panel de que le puedes añadir tazas hasta que vuelva a esa posición
         if (npcOver && GameManager.Instance.cameras[cameraToChoose].transform.rotation == rotInitial)
         {
             orderPanel.SetActive(true);
@@ -122,6 +122,7 @@ public class CameraChange : MonoBehaviour
         }
         
     }
+    
     private void OnTriggerExit(Collider other)
     {
         if (camChanged && other.gameObject.CompareTag("NPC"))

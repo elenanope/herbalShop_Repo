@@ -25,6 +25,8 @@ public class NPC : MonoBehaviour
 
     [SerializeField] bool stay;
     [SerializeField] bool canArrive;
+    [SerializeField] bool justChecked;
+    public bool canBeServed = true;//y ahi cambio de sprite a enfadao y que tarde más el siguiente cliente
 
     [SerializeField] bool onTheWay;
     public bool arrived;
@@ -50,22 +52,30 @@ public class NPC : MonoBehaviour
         transform.position = spawnPos.position;
     }
     private void Update()
-    {
-        if(!stay && canArrive)
+    {//hacer enum CustomerState { GoingToShop, AtShop, Leaving, Done }???
+        if (!stay && canArrive)
         {
             Vector2 ownPosNoY = new Vector2 (transform.position.x, transform.position.z);
             Vector2 shopPosNoY = new Vector2 (shopPos.position.x, shopPos.position.z);
             if(!arrived && !served)
             {
                 float distance = Vector3.Distance(ownPosNoY, shopPosNoY); //ahora no va
-                Debug.Log("esta a esta distancia del carro: "+ distance);
+                //Debug.Log("esta a esta distancia del carro: "+ distance);
                 if (distance < 0.1)
                 {
                     animator.SetBool("isWalking", false);
                     arrived = true;
                 }
             }
-            else if (served && !arrived)
+            else if ((served && !arrived))
+            {
+                float distance = Vector3.Distance(transform.position, startPos.position); //arreglar todo esto para que no lo checkee constantly
+                if (distance < 0.1) //a 0.35 va bien pero se queda muy cerca
+                {
+                    animator.SetBool("isWalking", false);
+                }
+            }
+            if(!canBeServed)
             {
                 float distance = Vector3.Distance(transform.position, startPos.position); //arreglar todo esto para que no lo checkee constantly
                 if (distance < 0.1) //a 0.35 va bien pero se queda muy cerca
@@ -96,16 +106,57 @@ public class NPC : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if(!justChecked)
+        {
+            
+            RaycastHit hit;//hacer todo esto si esta a x distancia de la tienda y va hacia ella sin estar served, si eso puedo gestionar en un script del carro quien va en que orden para evitar bugs 
+            Debug.DrawRay(transform.position, transform.TransformDirection(-Vector3.forward) * 0.75f, Color.yellow); //cambiar esto para que no lo checkee cada frame aunque sea cada medio segundo
+            if (Physics.Raycast(transform.position, transform.TransformDirection(-Vector3.forward), out hit, 0.75f)) //añadir 3 raycast/5 por si uno se queda quieto que el otro pueda rodearlo
+            {
+                StopAllCoroutines();
+                if (hit.collider.CompareTag("NPC"))
+                {
+                    Debug.Log("Did hit NPC");
+                    stay = true;
+                    animator.SetBool("isWalking", false);
+                    StartCoroutine(CheckAgain());
+                }
+                else
+                {
+                    stay = false;
+                    if (animator.GetBool("isWalking")) animator.SetBool("isWalking", true);
+                }
+            }
+            else
+            {
+                StopAllCoroutines();
+                stay = false;
+                if (animator.GetBool("isWalking")) animator.SetBool("isWalking", true);
+            }
+
+        }
+        
         if (!stay)
         {
             if (!served && !arrived)
             {
-                Movement(shopPos.position);
+                Movement(shopPos.position, false);
             }
-            else if(served && !arrived) Movement(startPos.position);
+            else if(served && !arrived) Movement(startPos.position, true);
+            if(!canBeServed)
+            {
+                Movement(startPos.position, true);
+            }
         }
     }
 
+    IEnumerator CheckAgain()
+    {
+        Debug.Log("Waiting to check again, i am "+ gameObject.name);
+        justChecked = true;
+        yield return new WaitForSeconds(2f);
+        justChecked = false;
+    }
     void OrderTea()
     {
         dialogueBubble.SetActive(true);
@@ -114,15 +165,37 @@ public class NPC : MonoBehaviour
         Debug.Log($"La hierba {herbNumber} de nombre {GameManager.Instance.herbs[herbNumber]} ha sido elegida.");
     }
 
-    void Movement(Vector3 targetPos)
+    void Movement(Vector3 targetPos, bool isServed)
     {
+        Vector3 targetPosWithoutY = new Vector3 (targetPos.x,rb.position.y, targetPos.z);
         Vector3 moveInput;
-        rb.position = Vector3.MoveTowards(rb.position, targetPos, moveSpeed*Time.deltaTime);
-        moveInput =  targetPos - rb.position;
+        rb.position = Vector3.MoveTowards(rb.position, targetPosWithoutY, moveSpeed * Time.deltaTime);
+        moveInput = targetPosWithoutY - rb.position;
         Quaternion toRotation = Quaternion.LookRotation(-moveInput, Vector3.up);
         rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, toRotation, turnSpeed * Time.fixedDeltaTime));
-        
+
         if (animator.GetBool("isWalking") == false) animator.SetBool("isWalking", true);
+        /*
+        if(isServed)
+        {
+            int rotationToAdd = 0;
+            RaycastHit hit;//hacer que al estar served, vaya rollo aspiradora 
+            Debug.DrawRay(transform.position, transform.TransformDirection(-Vector3.forward) * 0.75f, Color.blue); //cambiar esto para que no lo checkee cada frame aunque sea cada medio segundo
+            if (Physics.Raycast(transform.position, transform.TransformDirection(-Vector3.forward), out hit, 0.75f))
+            {
+                stay = true;
+                animator.SetBool("isWalking", false);
+                Debug.Log("Did hit something");
+                transform.rotation = Quaternion.LookRotation(transform.rotation,
+            }
+            else
+            {
+                stay = false;
+                if (animator.GetBool("isWalking")) animator.SetBool("isWalking", true);
+            }
+        }
+        */
+
         //quitar que rote en algo mas que y
     }
     private void OnTriggerEnter(Collider other)
