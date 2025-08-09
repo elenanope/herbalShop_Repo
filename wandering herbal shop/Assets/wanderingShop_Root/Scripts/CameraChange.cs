@@ -92,6 +92,7 @@ public class CameraChange : MonoBehaviour
             GameManager.Instance.cameras[cameraToChoose].enabled = false;
             drinkPanel.SetActive(false);
             mapPanel.SetActive(true );
+            orderPanel.SetActive(false);
             rotate = false;
             camChanged = false;
             changeTrigger = false;

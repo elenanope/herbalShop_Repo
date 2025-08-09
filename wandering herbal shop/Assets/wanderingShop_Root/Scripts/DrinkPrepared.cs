@@ -6,6 +6,7 @@ using TMPro;
 using System;
 using System.Linq;
 using Unity.VisualScripting;
+using static UnityEngine.Rendering.DebugUI;
 
 public class DrinkPrepared : MonoBehaviour
 {
@@ -27,13 +28,16 @@ public class DrinkPrepared : MonoBehaviour
     [SerializeField] Transform mugSpawner; //añadir tmb otras tazas
     public bool mugInTable; //añadir tmb otras tazas
     CameraChange cameraScript;
-    
+    [SerializeField] GameObject waterBottle = null;
+    [SerializeField] GameObject waterLevel = null;
+    [SerializeField] int waterLeft = 13;
 
     SpriteRenderer[] childrenSprites;
     [SerializeField] TMP_Text replenishText; //añadir tmb otras tazas
     [SerializeField] bool extraMugs;//hacer que sea int y las puedas poner poco a poco?
+    [SerializeField] bool extraWater;//hacer que sea int y las puedas poner poco a poco?
 
-    [SerializeField] Button[] herbsButton = new Button[9]; //en total: menta, dandelion, manzanilla, tomillo, hinojo, colaCaballo, lavanda, tila,  te, frutosBosque
+    [SerializeField] UnityEngine.UI.Button[] herbsButton = new UnityEngine.UI.Button[9]; //en total: menta, dandelion, manzanilla, tomillo, hinojo, colaCaballo, lavanda, tila,  te, frutosBosque
     [SerializeField] int[] herbActualOrder = {-1, -1, -1, -1, -1, -1, -1, -1, -1}; //en el orden en el que lleguen a botones/cuales estén libres SI ESTAN VACIOS -1
     //refe a cada boton: cada uno accede a sus hijos imagen y les activa el componente imagen con el sprite correspondiente
     //cada vez que empieces nuevo día o entres al juego, que sse mantengan los que estaban
@@ -136,11 +140,40 @@ public class DrinkPrepared : MonoBehaviour
     public void AddWater()
     {
         //si el aparato no está roto,tiene batería y tiene suficiente agua
-        if (mugInTable)
+        if(waterLeft>0)
         {
-            waterAdded++;
-            actualMug.transform.GetChild(0).gameObject.SetActive(true);
+            if (mugInTable && waterAdded < 3)
+            {
+                waterAdded++;
+                if (!actualMug.transform.GetChild(0).gameObject.activeSelf)
+                {
+                    actualMug.transform.GetChild(0).gameObject.SetActive(true);
+                }
+                else
+                {
+                    actualMug.transform.GetChild(0).gameObject.transform.localPosition = new Vector3(0, actualMug.transform.GetChild(0).gameObject.transform.localPosition.y + 0.005f, 0); //no preguntes por el 0.005
+                }
+
+                waterLeft--;
+                if(waterLeft != 0 ) waterLevel.transform.position = new Vector3(waterLevel.transform.position.x, Mathf.Lerp(0.2f, 0.25f, (waterLeft - 1) / 12f), waterLevel.transform.position.z);
+                else waterLevel.SetActive(false);
+            }
+            else Debug.Log("You cannot add any more water");
         }
+        else
+        {
+            Debug.Log("You have no water left!");
+            if(waterBottle != null)
+            {
+                waterBottle.gameObject.SetActive(false);
+                waterLeft = 13;
+                waterLevel.SetActive(true);
+                waterLevel.transform.position = new Vector3(waterLevel.transform.position.x, Mathf.Lerp(0.2f, 0.25f, (waterLeft - 1) / 12f), waterLevel.transform.position.z);
+                waterBottle = null;
+            }
+        }
+        
+        //el agua se gasta en 13 turnos, y quiero que el máximo sea 0.25 y el min 0.20 pq ya después se apaga
     }
     public void FinishDrink()
     {
@@ -235,6 +268,12 @@ public class DrinkPrepared : MonoBehaviour
             mugBox = other.gameObject;
             extraMugs = true;
         }
+        if(other.gameObject.name == "bottle")
+        {
+            waterBottle = other.gameObject;
+            Debug.Log("Water nearby");
+            //extraWater = true;
+        }
         if(other.CompareTag("NPC"))
         {
             actualNPC = other.gameObject;
@@ -248,6 +287,11 @@ public class DrinkPrepared : MonoBehaviour
         {
             mugBox = null;
             extraMugs = false;
+        }
+        if (other.gameObject.name == "bottle")
+        {
+            waterBottle = null;
+            //extraWater = true;
         }
         if (other.CompareTag("NPC"))
         {
