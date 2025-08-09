@@ -87,16 +87,17 @@ public class NPC : MonoBehaviour
         }   
         if(inShop&&arrived)
         {
-            if(drinkScript.isFinished && drinkScript.isFinished)
+            if(drinkScript.isFinished)
             {
                 if(herbNumber == drinkScript.ingredient)
                 {
                     served = true;
                     drinkScript.mugInTable = false;
-                    GameManager.Instance.money++; //suma muchos, como lo controlo? por ahora lo hago en coroutina
+                    GameManager.Instance.money++;
                     if(GameManager.Instance.infoUpdatesText != null)
                     {
                         GameManager.Instance.infoUpdatesText.text = "+1$";
+                        StopCoroutine(GameManager.Instance.FadeWait()); //necesario??
                         StartCoroutine(GameManager.Instance.FadeWait());
                     }
                     arrived = false;
@@ -113,7 +114,7 @@ public class NPC : MonoBehaviour
             Debug.DrawRay(transform.position, transform.TransformDirection(-Vector3.forward) * 0.75f, Color.yellow); //cambiar esto para que no lo checkee cada frame aunque sea cada medio segundo
             if (Physics.Raycast(transform.position, transform.TransformDirection(-Vector3.forward), out hit, 0.75f)) //añadir 3 raycast/5 por si uno se queda quieto que el otro pueda rodearlo
             {
-                StopAllCoroutines();
+                StopCoroutine(CheckAgain());
                 if (hit.collider.CompareTag("NPC"))
                 {
                     Debug.Log("Did hit NPC");
@@ -129,7 +130,7 @@ public class NPC : MonoBehaviour
             }
             else
             {
-                StopAllCoroutines();
+                StopCoroutine(CheckAgain());
                 stay = false;
                 if (animator.GetBool("isWalking")) animator.SetBool("isWalking", true);
             }

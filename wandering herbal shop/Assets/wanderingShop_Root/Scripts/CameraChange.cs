@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using TMPro;
 
 public class CameraChange : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class CameraChange : MonoBehaviour
     [SerializeField] GameObject transitionPanel;
     [SerializeField] GameObject drinkPanel;
     [SerializeField] GameObject orderPanel;
+    [SerializeField] GameObject mapPanel;
+    [SerializeField] TMP_Text replenishButton;
     [SerializeField] RenderTexture pixelRenderTexture;
     [SerializeField] bool cameraForOrdering = true;
     [SerializeField] bool npcOver = false;
@@ -46,6 +49,7 @@ public class CameraChange : MonoBehaviour
         Debug.Log(rotInitial);
         Debug.Log(rotSecond);
         drinkPanel.SetActive(false);
+        mapPanel.SetActive(true);
         GameManager.Instance.cameras[cameraToChoose].targetTexture = null;
         GameManager.Instance.cameras[cameraBefore].targetTexture = pixelRenderTexture;
         GameManager.Instance.cameras[cameraBefore].enabled = true;
@@ -63,12 +67,18 @@ public class CameraChange : MonoBehaviour
                 {
                     GameManager.Instance.cameras[cameraToChoose].transform.rotation = rotInitial;
                     orderPanel.SetActive(true);
+                    replenishButton.enabled = false;
                 }
-                else GameManager.Instance.cameras[cameraToChoose].transform.rotation = rotSecond;
+                else
+                {
+                    GameManager.Instance.cameras[cameraToChoose].transform.rotation = rotSecond;
+                    replenishButton.enabled = true;
+                }
                 //rotate = true;//RotateToTakeOrder();
             }
             GameManager.Instance.cameras[cameraToChoose].enabled = true;
             GameManager.Instance.cameras[cameraBefore].enabled = false;
+            mapPanel.SetActive(false );
             drinkPanel.SetActive(true);
             camChanged = true;
             changeTrigger = false;
@@ -81,6 +91,7 @@ public class CameraChange : MonoBehaviour
             GameManager.Instance.cameras[cameraBefore].enabled = true;
             GameManager.Instance.cameras[cameraToChoose].enabled = false;
             drinkPanel.SetActive(false);
+            mapPanel.SetActive(true );
             rotate = false;
             camChanged = false;
             changeTrigger = false;
@@ -97,12 +108,17 @@ public class CameraChange : MonoBehaviour
         GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(GameManager.Instance.cameras[cameraToChoose].transform.rotation, rotSecond, transitionSpeed * Time.deltaTime);
         
         if(orderPanel.activeInHierarchy) orderPanel.SetActive(false); // esto es muy sudden
-        if(GameManager.Instance.cameras[cameraToChoose].transform.rotation==rotSecond)orderTaken = false;
+        if (GameManager.Instance.cameras[cameraToChoose].transform.rotation == rotSecond)
+        {
+            orderTaken = false;
+            replenishButton.enabled = true;
+        }
     }
     void RotateToTakeOrder()
     {
+        replenishButton.enabled = false;
         GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(GameManager.Instance.cameras[cameraToChoose].transform.rotation, rotInitial, transitionSpeed * Time.deltaTime);
-        Debug.Log("Order taken!"); //hacer que aqui no se vea el panel de que le puedes añadir tazas hasta que vuelva a esa posición
+        Debug.Log("Order taken!");
         if (npcOver && GameManager.Instance.cameras[cameraToChoose].transform.rotation == rotInitial)
         {
             orderPanel.SetActive(true);

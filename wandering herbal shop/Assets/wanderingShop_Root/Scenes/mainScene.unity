@@ -13504,7 +13504,7 @@ GameObject:
   - component: {fileID: 827439879}
   - component: {fileID: 827439878}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: TouchToReplenishButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13528,7 +13528,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.587, y: 0.37785128}
   m_AnchorMax: {x: 0.86, y: 0.64547944}
-  m_AnchoredPosition: {x: -756.8949, y: -410.0997}
+  m_AnchoredPosition: {x: -756.8949, y: -410.09964}
   m_SizeDelta: {x: 369.13397, y: -3.6399994}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &827439878
@@ -25346,6 +25346,8 @@ MonoBehaviour:
   transitionPanel: {fileID: 0}
   drinkPanel: {fileID: 741515747}
   orderPanel: {fileID: 1711580602}
+  mapPanel: {fileID: 1334993682}
+  replenishButton: {fileID: 1738285608}
   pixelRenderTexture: {fileID: 8400000, guid: 7a08229b85f70f741b1bfbce026dea9a, type: 2}
   cameraForOrdering: 1
   npcOver: 0
@@ -31400,8 +31402,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 1442840575
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.33333334}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

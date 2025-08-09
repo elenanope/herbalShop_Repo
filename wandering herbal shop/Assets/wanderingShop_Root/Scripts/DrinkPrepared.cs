@@ -169,7 +169,7 @@ public class DrinkPrepared : MonoBehaviour
         waterAdded = 0;
         
         Debug.Log("Reset acabado");
-        StopAllCoroutines();
+        yield break;
     }
     public void UseMugs()
     {
