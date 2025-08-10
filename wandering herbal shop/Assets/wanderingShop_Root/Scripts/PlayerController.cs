@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     Animator anim;
     [SerializeField] MeshRenderer[] renderers;
 
-    [SerializeField] bool readyToTalk;
+    //[SerializeField] bool readyToTalk;
     public bool talkOrder;
 
     [SerializeField] GameObject heldObject;
@@ -187,11 +187,11 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("NPC"))
         {
-            readyToTalk = true;
+            //readyToTalk = true;
         }
         if (other.CompareTag("House"))
         {
-            readyToTalk = true;
+            //readyToTalk = true;
         }
         if (other.CompareTag("Pickable"))
         {
@@ -221,11 +221,11 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("NPC"))
         {
-            readyToTalk = false;
+            //readyToTalk = false;
         }
         if (other.CompareTag("House"))
         {
-            readyToTalk = false;
+            //readyToTalk = false;
         }
         if (other.CompareTag("Pickable"))
         {

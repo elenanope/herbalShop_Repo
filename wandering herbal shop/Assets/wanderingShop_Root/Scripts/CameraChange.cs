@@ -17,7 +17,6 @@ public class CameraChange : MonoBehaviour
     [SerializeField] GameObject mapPanel;
     [SerializeField] TMP_Text replenishButton;
     [SerializeField] RenderTexture pixelRenderTexture;
-    [SerializeField] bool cameraForOrdering = true;
     [SerializeField] int npcOver = 0;
     public bool rotate = false;
     //[SerializeField] float xRotInitial = 11;
@@ -46,8 +45,8 @@ public class CameraChange : MonoBehaviour
     }
     private void Start()
     {
-        Debug.Log(rotInitial);
-        Debug.Log(rotSecond);
+        //Debug.Log(rotInitial);
+        //Debug.Log(rotSecond);
         drinkPanel.SetActive(false);
         mapPanel.SetActive(true);
         GameManager.Instance.cameras[cameraToChoose].targetTexture = null;

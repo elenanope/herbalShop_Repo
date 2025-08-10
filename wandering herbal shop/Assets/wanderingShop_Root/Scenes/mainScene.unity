@@ -14582,6 +14582,11 @@ PrefabInstance:
       objectReference: {fileID: 2117253138}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: dialogueBubble
       value: 
       objectReference: {fileID: 693633967}
@@ -16036,6 +16041,11 @@ PrefabInstance:
       propertyPath: wantedHerb
       value: 
       objectReference: {fileID: 2117253138}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
       propertyPath: dialogueBubble
@@ -19896,6 +19906,11 @@ PrefabInstance:
       objectReference: {fileID: 2117253138}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: dialogueBubble
       value: 
       objectReference: {fileID: 693633967}
@@ -23751,6 +23766,11 @@ PrefabInstance:
       objectReference: {fileID: 2117253138}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: dialogueBubble
       value: 
       objectReference: {fileID: 693633967}
@@ -24945,6 +24965,11 @@ PrefabInstance:
       objectReference: {fileID: 2117253138}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: dialogueBubble
       value: 
       objectReference: {fileID: 693633967}
@@ -25621,7 +25646,6 @@ MonoBehaviour:
   mapPanel: {fileID: 1334993682}
   replenishButton: {fileID: 1738285608}
   pixelRenderTexture: {fileID: 8400000, guid: 7a08229b85f70f741b1bfbce026dea9a, type: 2}
-  cameraForOrdering: 1
   npcOver: 0
   rotate: 0
   rotInitial: {x: -0.0000000041895514, y: 0.9953962, z: -0.09584577, w: -0.00000004351015}
@@ -25663,7 +25687,6 @@ MonoBehaviour:
   waterLevel: {fileID: 160837617}
   waterLeft: 13
   replenishText: {fileID: 1738285608}
-  extraMugs: 0
   extraWater: 0
   herbsButton:
   - {fileID: 1419977722}
@@ -28190,6 +28213,11 @@ PrefabInstance:
       objectReference: {fileID: 2117253138}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: dialogueBubble
       value: 
       objectReference: {fileID: 693633967}
@@ -28410,6 +28438,11 @@ PrefabInstance:
       propertyPath: wantedHerb
       value: 
       objectReference: {fileID: 2117253138}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
       propertyPath: dialogueBubble
@@ -29350,6 +29383,11 @@ PrefabInstance:
       propertyPath: wantedHerb
       value: 
       objectReference: {fileID: 2117253138}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
       propertyPath: dialogueBubble
@@ -38026,6 +38064,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: stay
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: shopPos
       value: 
       objectReference: {fileID: 0}
@@ -38059,6 +38102,16 @@ PrefabInstance:
       propertyPath: wantedHerb
       value: 
       objectReference: {fileID: 2117253138}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: justChecked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: followingPath
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
       propertyPath: dialogueBubble
@@ -38127,7 +38180,7 @@ PrefabInstance:
     - target: {fileID: 9133438074129749729, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

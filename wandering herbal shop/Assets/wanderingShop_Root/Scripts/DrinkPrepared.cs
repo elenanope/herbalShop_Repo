@@ -35,7 +35,7 @@ public class DrinkPrepared : MonoBehaviour
     GameObject lastNPC = null;
     SpriteRenderer[] childrenSprites;
     [SerializeField] TMP_Text replenishText; //añadir tmb otras tazas
-    [SerializeField] bool extraMugs;//hacer que sea int y las puedas poner poco a poco?
+    //[SerializeField] bool extraMugs;//hacer que sea int y las puedas poner poco a poco?
     [SerializeField] bool extraWater;//hacer que sea int y las puedas poner poco a poco?
 
     [SerializeField] UnityEngine.UI.Button[] herbsButton = new UnityEngine.UI.Button[9]; //en total: menta, dandelion, manzanilla, tomillo, hinojo, colaCaballo, lavanda, tila,  te, frutosBosque
@@ -236,7 +236,7 @@ public class DrinkPrepared : MonoBehaviour
                 {
                     mugsInShop[i].SetActive(true);
                 }
-                extraMugs = false;
+                //extraMugs = false;
                 mugBox.SetActive(false);
                 replenishText.text = "";
                 mugBox = null;
@@ -278,7 +278,7 @@ public class DrinkPrepared : MonoBehaviour
         if(other.gameObject.name == "mugBox")
         {
             mugBox = other.gameObject;
-            extraMugs = true;
+            //extraMugs = true;
         }
         if(other.gameObject.name == "bottle")
         {
@@ -291,7 +291,7 @@ public class DrinkPrepared : MonoBehaviour
             actualNPC = other.gameObject;
             if(!actualNPC.GetComponent<NPC>().served && actualNPC.transform.childCount > 5)
             {
-                if (actualNPC.transform.GetChild(6).name.Contains("mugPrefab") && !mugInTable)
+                if (actualNPC.transform.GetChild(6).name.Contains("mugPrefab") && !mugInTable) //esto da error
                 {
                     actualMug = actualNPC.transform.GetChild(6).gameObject;
                     actualMug.transform.parent = null;
@@ -315,7 +315,7 @@ public class DrinkPrepared : MonoBehaviour
         if (other.gameObject.name == "mugBox")
         {
             mugBox = null;
-            extraMugs = false;
+            //extraMugs = false;
         }
         if (other.gameObject.name == "bottle")
         {
