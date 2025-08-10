@@ -93,6 +93,8 @@ public class TimeManager : MonoBehaviour
         hours = 10;
         minutes = 0;
         seconds = 0;
+        timeCanpass = true; //pero cuando acaben todas las animaciones y eso
+        Debug.Log("New day started");
     }
     IEnumerator NewNPC()
     {

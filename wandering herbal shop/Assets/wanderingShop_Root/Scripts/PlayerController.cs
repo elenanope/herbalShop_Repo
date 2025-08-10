@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     Animator anim;
     [SerializeField] MeshRenderer[] renderers;
 
-    //[SerializeField] bool readyToTalk;
+    [SerializeField] bool readyToEnter;
     public bool talkOrder;
 
     [SerializeField] GameObject heldObject;
@@ -92,6 +92,27 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Interactuando");
             if (!carryingSth)
             {
+                if(readyToEnter)
+                {
+                    if(TimeManager.Instance.hours == 21)
+                    {
+                        //animación entrar a su casa, cinemática 2 segundos aprox sueño+ ronquidos dibujos animados rollo hmmm pspspsppsfiufiufiu
+
+                        canMove = false;
+                        //menu taxes
+                        //guardar cuantas plantas tiene actualmente, agua, etc
+                        //cuando se despierta y sale de su casa puede ser (random según el día) que va en pijama y con un gorrito d pijama
+                        // -> se da cuenta, se sorprende hace una vuelta saltando en el aire y vfx y soniditos mágicos y boom, se ha cambiado magicamente
+                        TimeManager.Instance.NewDay();
+                        canMove = true;
+                    }
+                    else
+                    {
+                        Debug.Log("No puedes dormir a estas horas, esperate un poco chico");
+                        //mostrar texto de eh! no te puedes ir a dormir aún, anda a trabajar!!
+                    }
+                    
+                }
                 if(camChangeStep == 1)
                 {
                     
@@ -191,7 +212,7 @@ public class PlayerController : MonoBehaviour
         }
         if (other.CompareTag("House"))
         {
-            //readyToTalk = true;
+            readyToEnter = true;
         }
         if (other.CompareTag("Pickable"))
         {
@@ -225,7 +246,7 @@ public class PlayerController : MonoBehaviour
         }
         if (other.CompareTag("House"))
         {
-            //readyToTalk = false;
+            readyToEnter = false;
         }
         if (other.CompareTag("Pickable"))
         {
