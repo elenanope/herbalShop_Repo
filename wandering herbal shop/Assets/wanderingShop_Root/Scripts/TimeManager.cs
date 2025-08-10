@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class TimeManager : MonoBehaviour
@@ -18,11 +19,14 @@ public class TimeManager : MonoBehaviour
     }
     
     [Header("Time Parameters")]
+    [SerializeField] bool timeCanpass;
     [SerializeField] float seconds;
     public int minutes;
     public int hours; //despiertas 9/10, trabajas 11h a 20h, duermes a 21h SOLO PUEDES GUARDAR DE DIA EN DIA, SI TE VAS A MITAD DE UN DÍA NO SE GUARDARÁ EL PROGRESO
     //QUIZÁ PODRÍA HACER LOS DÍAS COMO 3 VECES MÁS LARGOS QUE EN GOOD PIZZA GREAT PIZZA Y PONER BREAKS PARA COMER Y VER A ALGÚN NPC POR AHÍ (EN VERSIÓN MÁS EXTENDIDA!)
-    public int day;
+    public int day = 1;
+    [SerializeField] TMP_Text timeText;
+    [SerializeField] TMP_Text dateText;
 
     [Header("NPC Parameters")]
     public int npcAtShop; // int?
@@ -44,7 +48,34 @@ public class TimeManager : MonoBehaviour
 
     void Update()
     {
-        if(npcAtShop < 2 && firstNPC && index < npcs.Count)
+        //Gestión TIEMPO
+        if(timeCanpass)
+        {
+            seconds += Time.deltaTime * 154.3f;
+            timeText.text = string.Format("{0:00}:{1:00}", hours, minutes); //hacer como en great pizza, que solo salen los minutos de 15 en 15 o quizá de 5 en 5
+            dateText.text = string.Format("day " + day);
+            if (seconds > 60)
+            {
+                minutes++;
+                seconds -= 60;
+            }
+            if (minutes > 60)
+            {
+                hours++;
+                minutes -= 60;
+            }
+            if (hours >= 21)
+            {
+                hours = 21;
+                timeText.text = string.Format("{0:00}:{1:00}", 21, 00);
+                timeCanpass = false;
+            }
+        }
+
+
+
+        //Gestión NPCs
+        if (npcAtShop < 2 && firstNPC && index < npcs.Count)
         {
             StartCoroutine (NewNPC());
         }
@@ -55,6 +86,13 @@ public class TimeManager : MonoBehaviour
                 StartCoroutine(ResendNPC());
             }
         }
+    }
+    public void NewDay()
+    {
+        day++;
+        hours = 10;
+        minutes = 0;
+        seconds = 0;
     }
     IEnumerator NewNPC()
     {
