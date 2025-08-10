@@ -18,7 +18,7 @@ public class CameraChange : MonoBehaviour
     [SerializeField] TMP_Text replenishButton;
     [SerializeField] RenderTexture pixelRenderTexture;
     [SerializeField] bool cameraForOrdering = true;
-    [SerializeField] bool npcOver = false;
+    [SerializeField] int npcOver = 0;
     public bool rotate = false;
     //[SerializeField] float xRotInitial = 11;
     //[SerializeField] float xRotSecond = 32.15f;
@@ -63,7 +63,7 @@ public class CameraChange : MonoBehaviour
             GameManager.Instance.cameras[cameraToChoose].targetTexture = pixelRenderTexture;
             if(!orderTaken)
             {
-                if (npcOver)
+                if (npcOver != 0)
                 {
                     GameManager.Instance.cameras[cameraToChoose].transform.rotation = rotInitial;
                     orderPanel.SetActive(true);
@@ -82,7 +82,7 @@ public class CameraChange : MonoBehaviour
             drinkPanel.SetActive(true);
             camChanged = true;
             changeTrigger = false;
-            Debug.Log("cam changed to take order!");
+            //Debug.Log("cam changed to take order!");
         }
         else
         {
@@ -96,14 +96,14 @@ public class CameraChange : MonoBehaviour
             rotate = false;
             camChanged = false;
             changeTrigger = false;
-            Debug.Log("cam changed to outside view!");
+            //Debug.Log("cam changed to outside view!");
         }
         
     }
     public void FocusOnHerbs()
     {
         if(rotate)rotate= false;
-        Debug.Log("you can begin taken the order!");
+        //Debug.Log("you can begin taken the order!");
         if(!orderTaken)orderTaken = true;
 
         GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(GameManager.Instance.cameras[cameraToChoose].transform.rotation, rotSecond, transitionSpeed * Time.deltaTime);
@@ -119,19 +119,23 @@ public class CameraChange : MonoBehaviour
     {
         replenishButton.enabled = false;
         GameManager.Instance.cameras[cameraToChoose].transform.rotation = Quaternion.Slerp(GameManager.Instance.cameras[cameraToChoose].transform.rotation, rotInitial, transitionSpeed * Time.deltaTime);
-        Debug.Log("Order taken!");
-        if (npcOver && GameManager.Instance.cameras[cameraToChoose].transform.rotation == rotInitial)
+        //Debug.Log("Order taken!");
+        if (npcOver != 0 && GameManager.Instance.cameras[cameraToChoose].transform.rotation == rotInitial)
         {
-            orderPanel.SetActive(true);
-            rotate = false;
+            if(camChanged)
+            {
+                orderPanel.SetActive(true);
+                rotate = false;
+            }
+            
         }
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("NPC"))
         {
-            npcOver = true;
-            Debug.Log("npcOver");
+            npcOver ++;
+            //Debug.Log("npcOver");
             if (camChanged)
             {
                 rotate = true;//RotateToTakeOrder();
@@ -144,7 +148,7 @@ public class CameraChange : MonoBehaviour
     {
         if (camChanged && other.gameObject.CompareTag("NPC"))
         {
-            npcOver = false;
+            npcOver--;
         }
     }
 }

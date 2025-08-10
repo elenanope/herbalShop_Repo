@@ -35,7 +35,7 @@ public class herbSelectedAnim : MonoBehaviour
                 {
                     herbRenderer.enabled = false;
                     transform.position = initialPos.position;
-                    Debug.Log("La planta ha sido devuelta silenciosamente");
+                    //Debug.Log("La planta ha sido devuelta silenciosamente");
                     index = 0;
                     ingredientAnimNow = false;
                 }

@@ -31,6 +31,7 @@ public class TimeManager : MonoBehaviour
     [SerializeField] List<NPC> npcs = new List<NPC>();
     [SerializeField] bool npcSent;
     [SerializeField] int index;
+    [SerializeField] float timeBetweenCustomers = 5;
 
     private void Awake()
     {
@@ -43,22 +44,17 @@ public class TimeManager : MonoBehaviour
 
     void Update()
     {
-        ///*
-        if(npcAtShop < 2 && firstNPC)
+        if(npcAtShop < 2 && firstNPC && index < npcs.Count)
         {
             StartCoroutine (NewNPC());
         }
-        if(index== 9 && npcAtShop < 1 && !npcSent) //ahora mismo va mal
+        if(npcAtShop < 1 && !npcSent) //ahora mismo va mal
         {
-            int randomNPC;
-            firstNPC = false;
-             randomNPC = Random.Range(0, npcs.Count);
-            npcs[randomNPC].served = false;
-            npcs[randomNPC].arrived = false;
+            if (npcs[npcs.Count - 1].served || !npcs[npcs.Count-1].canBeServed)
+            {
+                StartCoroutine(ResendNPC());
+            }
         }
-
-        //*/
-
     }
     IEnumerator NewNPC()
     {
@@ -67,18 +63,20 @@ public class TimeManager : MonoBehaviour
         npcs[index].gameObject.SetActive(true);
         index++;
         //npcAtShop++;
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(timeBetweenCustomers);
         firstNPC = true;
     }
     IEnumerator ResendNPC()
     {
-        npcSent = true;
         int randomNPC;
         firstNPC = false;
         randomNPC = Random.Range(0, npcs.Count);
         npcs[randomNPC].served = false;
         npcs[randomNPC].arrived = false;
+        Debug.Log("El NPC ya ha salido de nuevo, su numero es " + randomNPC);
+        npcSent = true;
         yield return new WaitForSeconds(20);
         npcSent = false;
+        yield break;
     }
 }

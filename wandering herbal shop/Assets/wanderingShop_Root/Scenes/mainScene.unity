@@ -13662,7 +13662,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.587, y: 0.37785128}
   m_AnchorMax: {x: 0.86, y: 0.64547944}
-  m_AnchoredPosition: {x: -756.8949, y: -410.09964}
+  m_AnchoredPosition: {x: -756.8949, y: -410.09958}
   m_SizeDelta: {x: 369.13397, y: -3.6399994}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &827439878
@@ -14564,6 +14564,16 @@ PrefabInstance:
         type: 3}
       propertyPath: canArrive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.x
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.z
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
@@ -16010,6 +16020,16 @@ PrefabInstance:
         type: 3}
       propertyPath: canArrive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
@@ -19861,6 +19881,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: startPos.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.z
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: wantedHerb
       value: 
       objectReference: {fileID: 2117253138}
@@ -20532,6 +20562,7 @@ GameObject:
   - component: {fileID: 1155799778}
   - component: {fileID: 1155799777}
   - component: {fileID: 1155799779}
+  - component: {fileID: 1155799780}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -20617,6 +20648,103 @@ MonoBehaviour:
   - {fileID: 814442798}
   npcSent: 0
   index: 0
+  timeBetweenCustomers: 5
+--- !u!82 &1155799780
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155799776}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 33869d25980beeb46a49096d7973c637, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &1161390535 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2f9752857eb11c64d9250654160ebc18,
@@ -24802,6 +24930,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: startPos.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.z
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: wantedHerb
       value: 
       objectReference: {fileID: 2117253138}
@@ -25520,6 +25658,7 @@ MonoBehaviour:
   actualNPC: {fileID: 0}
   mugSpawner: {fileID: 1671057238}
   mugInTable: 0
+  orderFinished: 0
   waterBottle: {fileID: 0}
   waterLevel: {fileID: 160837617}
   waterLeft: 13
@@ -28036,6 +28175,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
+      propertyPath: startPos.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.z
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
       propertyPath: wantedHerb
       value: 
       objectReference: {fileID: 2117253138}
@@ -28245,6 +28394,16 @@ PrefabInstance:
         type: 3}
       propertyPath: canArrive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.z
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
@@ -29175,6 +29334,16 @@ PrefabInstance:
         type: 3}
       propertyPath: canArrive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.z
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}
@@ -37874,6 +38043,16 @@ PrefabInstance:
         type: 3}
       propertyPath: canArrive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
+        type: 3}
+      propertyPath: startPos.z
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7890097885328185696, guid: 6f38eac6e0036b24fba737f7ddeadf8c,
         type: 3}

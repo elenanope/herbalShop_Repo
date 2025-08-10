@@ -23,6 +23,7 @@ public class NPC : MonoBehaviour
     [SerializeField] Image wantedHerb = null;
     [SerializeField] int herbNumber;
 
+    [SerializeField] bool followingPath;
     [SerializeField] bool stay;
     [SerializeField] bool canArrive;
     [SerializeField] bool justChecked;
@@ -30,7 +31,7 @@ public class NPC : MonoBehaviour
 
     [SerializeField] bool onTheWay;
     public bool arrived;
-    [SerializeField] Transform startPos;
+    [SerializeField] Vector3 startPos;
     [SerializeField] Transform shopPos;
 
     [SerializeField] Transform spawnPos;
@@ -47,7 +48,6 @@ public class NPC : MonoBehaviour
     {
         //esto por ahora
         shopPos = GameObject.Find("customerPos").transform;
-        startPos = GameObject.Find("NPCStartPos").transform;
         spawnPos = GameObject.Find("NPCSpawnPos").transform;
         transform.position = spawnPos.position;
     }
@@ -69,7 +69,7 @@ public class NPC : MonoBehaviour
             }
             else if ((served && !arrived))
             {
-                float distance = Vector3.Distance(transform.position, startPos.position); //arreglar todo esto para que no lo checkee constantly
+                float distance = Vector3.Distance(transform.position, startPos); //arreglar todo esto para que no lo checkee constantly
                 if (distance < 0.1) //a 0.35 va bien pero se queda muy cerca
                 {
                     animator.SetBool("isWalking", false);
@@ -77,7 +77,7 @@ public class NPC : MonoBehaviour
             }
             if(!canBeServed)
             {
-                float distance = Vector3.Distance(transform.position, startPos.position); //arreglar todo esto para que no lo checkee constantly
+                float distance = Vector3.Distance(transform.position, startPos); //arreglar todo esto para que no lo checkee constantly
                 if (distance < 0.1) //a 0.35 va bien pero se queda muy cerca
                 {
                     animator.SetBool("isWalking", false);
@@ -92,7 +92,8 @@ public class NPC : MonoBehaviour
                 if(herbNumber == drinkScript.ingredient)
                 {
                     served = true;
-                    drinkScript.mugInTable = false;
+                    drinkScript.orderFinished = true;
+                    //drinkScript.mugInTable = false;
                     GameManager.Instance.money++;
                     if(GameManager.Instance.infoUpdatesText != null)
                     {
@@ -102,6 +103,7 @@ public class NPC : MonoBehaviour
                     }
                     arrived = false;
                 }
+                else drinkScript.isFinished = false;
             }
         }
     }
@@ -143,27 +145,27 @@ public class NPC : MonoBehaviour
             {
                 Movement(shopPos.position, false);
             }
-            else if(served && !arrived) Movement(startPos.position, true);
+            else if(served && !arrived) Movement(startPos, true);
             if(!canBeServed)
             {
-                Movement(startPos.position, true);
+                Movement(startPos, true);
             }
         }
     }
 
     IEnumerator CheckAgain()
     {
-        Debug.Log("Waiting to check again, i am "+ gameObject.name);
+        //Debug.Log("Waiting to check again, i am "+ gameObject.name);
         justChecked = true;
         yield return new WaitForSeconds(2f);
         justChecked = false;
     }
     void OrderTea()
     {
-        dialogueBubble.SetActive(true);
+        //dialogueBubble.SetActive(true);
         herbNumber = Random.Range(0, GameManager.Instance.herbs.Length);
         wantedHerb.sprite = GameManager.Instance.herbs[herbNumber];
-        Debug.Log($"La hierba {herbNumber} de nombre {GameManager.Instance.herbs[herbNumber]} ha sido elegida.");
+        //Debug.Log($"La hierba {herbNumber} de nombre {GameManager.Instance.herbs[herbNumber]} ha sido elegida.");
     }
 
     void Movement(Vector3 targetPos, bool isServed)
@@ -213,7 +215,7 @@ public class NPC : MonoBehaviour
     {
         if (other.CompareTag("TeaShop"))
         {
-            dialogueBubble.SetActive(false);
+            //dialogueBubble.SetActive(false);
             inShop = false;
         }
     }

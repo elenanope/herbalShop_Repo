@@ -27,11 +27,12 @@ public class DrinkPrepared : MonoBehaviour
     [SerializeField] GameObject actualNPC = null; //añadir tmb otras tazas
     [SerializeField] Transform mugSpawner; //añadir tmb otras tazas
     public bool mugInTable; //añadir tmb otras tazas
+    public bool orderFinished; //confirmed by NPC
     CameraChange cameraScript;
     [SerializeField] GameObject waterBottle = null;
     [SerializeField] GameObject waterLevel = null;
     [SerializeField] int waterLeft = 13;
-
+    GameObject lastNPC = null;
     SpriteRenderer[] childrenSprites;
     [SerializeField] TMP_Text replenishText; //añadir tmb otras tazas
     [SerializeField] bool extraMugs;//hacer que sea int y las puedas poner poco a poco?
@@ -43,6 +44,20 @@ public class DrinkPrepared : MonoBehaviour
     //cada vez que empieces nuevo día o entres al juego, que sse mantengan los que estaban
 
     //32.15 rotacion x ingredientes preparar, 5 rotacion x to hear out
+    private void Update()
+    {
+        if (orderFinished) //esto creo que se confirma tarde AQUIIII
+        {
+            if (actualMug != null)
+            {
+                actualMug.transform.parent = lastNPC.transform;//si vienen muy juntos, se queda la taza el otro
+                                                               //reset:
+                StartCoroutine(ResetIngredients());
+            }
+            cameraScript.rotate = true;
+            //la camara vuelve a rotar?
+        }
+    }
     private void Start()
     {
         cameraScript = GetComponent<CameraChange>();
@@ -103,7 +118,7 @@ public class DrinkPrepared : MonoBehaviour
                         }
                     }
                 }
-                Debug.Log("Quedan todavía " + enabledHerbs + " trozos de la planta id " + ingredientNumber);
+                //Debug.Log("Quedan todavía " + enabledHerbs + " trozos de la planta id " + ingredientNumber);
                 for (int i = 0; i < childrenSprites.Length; i++)
                 {
                     if (childrenSprites[i].gameObject != herbsButton[buttonNumber].gameObject)
@@ -112,12 +127,12 @@ public class DrinkPrepared : MonoBehaviour
                         {
                             ingredient = ingredientNumber;
                             isEmpty = false;
-                            Debug.Log("Ingredient added!");
+                            //Debug.Log("Ingredient added!");
                             if (enabledHerbs == 1)
                             {
                                 herbsButton[buttonNumber].onClick.RemoveAllListeners();
                                 herbActualOrder[buttonNumber] = -1;
-                                Debug.Log("Botón apagado por falta de hierbas!");
+                                //Debug.Log("Botón apagado por falta de hierbas!");
                             }
                             //StartCoroutine(AddIngredientAnim(childrenSprites[i]));
                             //childrenSprites[i].enabled = false;
@@ -177,19 +192,14 @@ public class DrinkPrepared : MonoBehaviour
     }
     public void FinishDrink()
     {
-        GameObject lastNPC = actualNPC;
+        lastNPC = actualNPC;
         if (!isEmpty && waterAdded > 0)
         {
             isFinished = true;
             Debug.Log("Drink finished!");
-            if (actualMug != null)
-            {
-                actualMug.transform.parent = lastNPC.transform;//si vienen muy juntos, se queda la taza el otro
-                                                               //reset:
-                StartCoroutine(ResetIngredients());
-            }
-            cameraScript.rotate = true;
-            //la camara vuelve a rotar
+            
+            //else Debug.Log("No has podido servirles. NPC servido: " + orderFinished + "La taza actual es: " + actualMug);
+
         }
         else isFinished = false;
     }
@@ -200,13 +210,15 @@ public class DrinkPrepared : MonoBehaviour
         isEmpty = true;
         isFinished = false;
         waterAdded = 0;
-        
+        orderFinished = false;
+
+
         Debug.Log("Reset acabado");
         yield break;
     }
     public void UseMugs()
     {
-        Debug.Log("You are pressing the button");
+        //Debug.Log("You are pressing the button");
         //cuenta las tazas que hay
         mugsAvailable = 0;
         for (int i = 0; i < mugsInShop.Length; i++)
@@ -251,7 +263,7 @@ public class DrinkPrepared : MonoBehaviour
                         break;
                     }
                 }
-                Debug.Log("Mugs now available: " + mugsAvailable);
+                //Debug.Log("Mugs now available: " + mugsAvailable);
             }
             else Debug.Log("Look! You already have a mug!");
         }
@@ -277,6 +289,23 @@ public class DrinkPrepared : MonoBehaviour
         if(other.CompareTag("NPC"))
         {
             actualNPC = other.gameObject;
+            if(!actualNPC.GetComponent<NPC>().served && actualNPC.transform.childCount > 5)
+            {
+                if (actualNPC.transform.GetChild(6).name.Contains("mugPrefab") && !mugInTable)
+                {
+                    actualMug = actualNPC.transform.GetChild(6).gameObject;
+                    actualMug.transform.parent = null;
+                    actualMug.transform.position = mugSpawner.position;
+                    actualMug.transform.rotation = mugSpawner.rotation;
+                    mugInTable = true;
+                    Debug.Log("Taza cogida");
+                }
+                else
+                {
+                    Debug.Log("no tiene taza");
+                }
+            }
+            
             TimeManager.Instance.npcAtShop++;
         }
     }
@@ -295,7 +324,7 @@ public class DrinkPrepared : MonoBehaviour
         }
         if (other.CompareTag("NPC"))
         {
-            actualNPC = null;
+            if (actualNPC.GetComponent<NPC>().served) actualNPC = null;
             TimeManager.Instance.npcAtShop -= 1;
             // no va :( , lo pongo en reset TimeManager.Instance.npcAtShop -= 1; //no va??
             //TimeManager.Instance.firstNPC = true;
